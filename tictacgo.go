@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/ave19/tictacgo/lib"
 )
 
 func main() {
@@ -78,5 +79,8 @@ func main() {
 	b := tictacgo.NewBoard()
 	b.Move(3, 2)
 	fmt.Println(b.String())
+	win, winner := b.Winner()
+	fmt.Println("win: ", win)
+	fmt.Println("winner: ", winner)
 
 }

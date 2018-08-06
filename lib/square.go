@@ -19,12 +19,12 @@ type Square struct {
 
 func (s Square) String() string {
 	switch s.state {
-	case X:
+	case x:
 		return "X"
-	case O:
+	case o:
 		return "O"
 	case empty:
-		return "."
+		return " "
 	default:
 		return "?"
 	}
@@ -51,18 +51,14 @@ func (s *Square) SetFromString(newValue string) {
 
 // SetFromByte changes the state to the indicated mark
 func (s *Square) SetFromByte(newValue byte) {
-	fmt.Printf("&s = %p\n", &s)
-	fmt.Printf("set from byte: new_value: %v\n", newValue)
-	switch new_value {
+	switch newValue {
 	case 0:
 		s.state = empty
 	case 1:
-		s.state = X
+		s.state = x
 	case 2:
-		s.state = O
+		s.state = o
 	default:
-		fmt.Printf("I don't like that value '%v', I'm ignoring you.\n", new_value)
+		fmt.Printf("I don't like that value '%v', I'm ignoring you.\n", newValue)
 	}
-	fmt.Printf("s.state: %v\n", s.state)
-	fmt.Printf("&s = %p\n", &s)
 }

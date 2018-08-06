@@ -7,128 +7,144 @@ import (
 	"strconv"
 )
 
-type board struct {
-	board map[uint8]Square
+const numSquares = 9
+
+var winCombos = [8][3]byte{
+	{0, 1, 2}, // across the top
+	{3, 4, 5}, // across the middle
+	{6, 7, 8}, // across the bottom
+	{0, 4, 8}, // diagnol down
+	{6, 4, 2}, // diagnol up
+	{0, 3, 6}, // down left
+	{1, 4, 7}, // down middle
+	{2, 5, 8}, // down right
+}
+
+// Board is the tic tac toe board
+type Board struct {
+	board []Square
 }
 
 // NewBoard returns a board structure
-func NewBoard() (board *Board) {
-	bPtr := &Board{}
-	bPtr.board = make(map[uint8]Square, 9)
-	for i := uint8(0); i < 10; i++ {
-		b_ptr.board[i] = Square{0}
+func NewBoard() Board {
+	var b Board
+	b.board = make([]Square, numSquares)
+	for i := byte(0); i < byte(numSquares); i++ {
+		b.board[i].state = 0
 	}
-	return b_ptr
+	return b
 }
 
 func (b Board) String() string {
 	var output bytes.Buffer
-	output.WriteString("start...")
-	for i := uint8(0); i < uint8(len(b.board)); i++ {
-		output.WriteString(strconv.Itoa(int(i)))
-		output.WriteString(" -> ")
-		output.WriteString(b.board[i].String())
-		output.WriteString("\n")
-	}
-	output.WriteString("...end\n")
+	output.WriteString(b.board[0].String())
+	output.WriteString("|")
+	output.WriteString(b.board[1].String())
+	output.WriteString("|")
+	output.WriteString(b.board[2].String())
+	output.WriteString("\n-+-+-\n")
+	output.WriteString(b.board[3].String())
+	output.WriteString("|")
+	output.WriteString(b.board[4].String())
+	output.WriteString("|")
+	output.WriteString(b.board[5].String())
+	output.WriteString("\n-+-+-\n")
+	output.WriteString(b.board[6].String())
+	output.WriteString("|")
+	output.WriteString(b.board[7].String())
+	output.WriteString("|")
+	output.WriteString(b.board[8].String())
+	output.WriteString("\n")
 	return output.String()
 }
 
-/*
-func (board Board) Base3() string {
-  var output bytes.Buffer
-  output.WriteString(strconv.FormatInt(int64(board.Upper_left.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Upper_center.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Upper_right.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Middle_left.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Middle_center.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Middle_right.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Lower_left.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Lower_center.Byte()), 10))
-  output.WriteString(strconv.FormatInt(int64(board.Lower_right.Byte()), 10))
-  return fmt.Sprintf("%09s", output.String())
+// Base3 returns the base 3 string for the board state
+func (b Board) Base3() string {
+	var output bytes.Buffer
+	output.WriteString(strconv.FormatInt(int64(b.board[0].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[1].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[2].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[3].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[4].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[5].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[6].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[7].Byte()), 10))
+	output.WriteString(strconv.FormatInt(int64(b.board[8].Byte()), 10))
+	return fmt.Sprintf("%09s", output.String())
 }
-*/
 
-/*
-func (board Board) Int() uint64 {
-  // turn the squares into a string
-  x, _ := strconv.ParseUint(board.Base3(), 3, 64)
-  return x
+// Int returns the integer for the board state
+func (b Board) Int() uint64 {
+	// turn the squares into a string
+	x, _ := strconv.ParseUint(b.Base3(), 3, 64)
+	return x
 }
-*/
 
-/*
-func (board *Board) SetFromInt(new_value uint64) {
-  if new_value > 19862 {
-    fmt.Println("new value is too big")
-  } else {
-    board.SetFromBase3(strconv.FormatUint(new_value, 3))
-  }
+// SetFromInt you give it an integer, it makes a board out of it
+func (b *Board) SetFromInt(newValue uint64) {
+	if newValue > 19862 {
+		fmt.Println("new value is too big")
+	} else {
+		b.SetFromBase3(strconv.FormatUint(newValue, 3))
+	}
 }
-*/
 
-/*
-func (board *Board) SetFromBase3(new_value string) {
-  str_representation := fmt.Sprintf("%09s", new_value)
+// SetFromBase3 you give it a string like '010212120'
+func (b *Board) SetFromBase3(newValue string) {
+	strRepresentation := fmt.Sprintf("%09s", newValue)
 
-  ul, _ := strconv.ParseInt(str_representation[0:1], 10, 8)
-  uc, _ := strconv.ParseInt(str_representation[1:2], 10, 8)
-  ur, _ := strconv.ParseInt(str_representation[2:3], 10, 8)
-  ml, _ := strconv.ParseInt(str_representation[3:4], 10, 8)
-  mc, _ := strconv.ParseInt(str_representation[4:5], 10, 8)
-  mr, _ := strconv.ParseInt(str_representation[5:6], 10, 8)
-  ll, _ := strconv.ParseInt(str_representation[6:7], 10, 8)
-  lc, _ := strconv.ParseInt(str_representation[7:8], 10, 8)
-  lr, _ := strconv.ParseInt(str_representation[8:], 10, 8)
+	ul, _ := strconv.ParseInt(strRepresentation[0:1], 10, 8)
+	uc, _ := strconv.ParseInt(strRepresentation[1:2], 10, 8)
+	ur, _ := strconv.ParseInt(strRepresentation[2:3], 10, 8)
+	ml, _ := strconv.ParseInt(strRepresentation[3:4], 10, 8)
+	mc, _ := strconv.ParseInt(strRepresentation[4:5], 10, 8)
+	mr, _ := strconv.ParseInt(strRepresentation[5:6], 10, 8)
+	ll, _ := strconv.ParseInt(strRepresentation[6:7], 10, 8)
+	lc, _ := strconv.ParseInt(strRepresentation[7:8], 10, 8)
+	lr, _ := strconv.ParseInt(strRepresentation[8:9], 10, 8)
 
-
-  board.Upper_left.SetFromByte(byte(ul))
-  board.Upper_center.SetFromByte(byte(uc))
-  board.Upper_right.SetFromByte(byte(ur))
-  board.Middle_left.SetFromByte(byte(ml))
-  board.Middle_center.SetFromByte(byte(mc))
-  board.Middle_right.SetFromByte(byte(mr))
-  board.Lower_left.SetFromByte(byte(ll))
-  board.Lower_center.SetFromByte(byte(lc))
-  board.Lower_right.SetFromByte(byte(lr))
+	b.board[0].SetFromByte(byte(ul))
+	b.board[1].SetFromByte(byte(uc))
+	b.board[2].SetFromByte(byte(ur))
+	b.board[3].SetFromByte(byte(ml))
+	b.board[4].SetFromByte(byte(mc))
+	b.board[5].SetFromByte(byte(mr))
+	b.board[6].SetFromByte(byte(ll))
+	b.board[7].SetFromByte(byte(lc))
+	b.board[8].SetFromByte(byte(lr))
 }
-*/
-
-/*
-func (board Board) GetSquareByInt(square int) *Square {
-  switch square {
-  case 0:
-    return board.Upper_left
-  case 1:
-    return board.Upper_center
-  case 2:
-    return board.Upper_right
-  case 3:
-    return board.Middle_left
-  case 4:
-    return board.Middle_center
-  case 5:
-    return board.Middle_right
-  case 6:
-    return board.Lower_left
-  case 7:
-    return board.Lower_center
-  case 8:
-    return board.Lower_right
-  default:
-    fmt.Println("I am very mad")
-    return board.Middle_center
-  }
-}
-*/
 
 // Move adjusts the board to a moved state
 func (b *Board) Move(square uint8, mark byte) {
-	fmt.Printf("square: %v\n", square)
-	fmt.Printf("move: square: %T\n", b.board[square])
-	fmt.Printf("move: mark: %v\n", mark)
-	sPtr := b.board[square]
-	sPtr.SetFromByte(mark)
-	//fmt.Printf("move board:\n%v\n", board.String())
+	b.board[square].SetFromByte(mark)
+}
+
+// Winner return the winning player if there is one
+func (b *Board) Winner() (win bool, winner byte) {
+	win = false
+	winner = 0
+	for i := range winCombos {
+		//fmt.Println("testing ", winCombos[i])
+		if b.board[winCombos[i][0]].Byte() == 0 {
+			//fmt.Println(winCombos[i][0], " is 0, continue")
+			continue
+		}
+		if b.board[winCombos[i][1]].Byte() == 0 {
+			//fmt.Println(winCombos[i][0], " is 0, continue")
+			continue
+		}
+		if b.board[winCombos[i][2]].Byte() == 0 {
+			//fmt.Println(winCombos[i][0], " is 0, continue")
+			continue
+		}
+		if (b.board[winCombos[i][0]].Byte() == b.board[winCombos[i][1]].Byte()) &&
+			(b.board[winCombos[i][0]].Byte() == b.board[winCombos[i][2]].Byte()) {
+			winner = b.board[winCombos[i][0]].Byte()
+			win = true
+			//fmt.Println("winner: ", winner)
+			return
+		}
+		//fmt.Println("no winner, continue")
+	}
+	return
 }

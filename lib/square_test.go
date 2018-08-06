@@ -1,14 +1,14 @@
-package tic_tac_go
+package tictacgo
 
 import (
 	"testing"
 )
 
 func TestSetFromStringX(t *testing.T) {
-	test_square := Square{}
+	testSquare := Square{}
 	expected := "X"
-	test_square.SetFromString(expected)
-	result := test_square.String()
+	testSquare.SetFromString(expected)
+	result := testSquare.String()
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
@@ -16,10 +16,10 @@ func TestSetFromStringX(t *testing.T) {
 }
 
 func TestSetFromStringO(t *testing.T) {
-	test_square := Square{}
+	testSquare := Square{}
 	expected := "O"
-	test_square.SetFromString(expected)
-	result := test_square.String()
+	testSquare.SetFromString(expected)
+	result := testSquare.String()
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
@@ -27,10 +27,10 @@ func TestSetFromStringO(t *testing.T) {
 }
 
 func TestSetFromStringEmpty(t *testing.T) {
-	test_square := Square{}
+	testSquare := Square{}
 	expected := " "
-	test_square.SetFromString(expected)
-	result := test_square.String()
+	testSquare.SetFromString(expected)
+	result := testSquare.String()
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
@@ -38,11 +38,11 @@ func TestSetFromStringEmpty(t *testing.T) {
 }
 
 func TestByteX(t *testing.T) {
-	test_square := Square{}
+	testSquare := Square{}
 	var expected byte = 1
-	var test_string string = "X"
-	test_square.SetFromString(test_string)
-	result := test_square.Byte()
+	var testString = "X"
+	testSquare.SetFromString(testString)
+	result := testSquare.Byte()
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
@@ -50,11 +50,11 @@ func TestByteX(t *testing.T) {
 }
 
 func TestSetFromByte(t *testing.T) {
-	test_square := Square{}
+	testSquare := Square{}
 	var expected byte = 1
-	var test_byte byte = 1
-	test_square.SetFromByte(test_byte)
-	result := test_square.Byte()
+	var testByte byte = 1
+	testSquare.SetFromByte(testByte)
+	result := testSquare.Byte()
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
