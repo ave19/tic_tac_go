@@ -23,6 +23,10 @@ func NewRememberLosingStrategy() *RememberLosingStrategy {
 	}
 }
 
+func (r *RememberLosingStrategy) resetMoves() {
+	r.moves = make(map[uint][]byte)
+}
+
 // Name of the strategy
 func (r *RememberLosingStrategy) Name() string {
 	return r.name
@@ -33,16 +37,16 @@ func (r *RememberLosingStrategy) Move(b Board) byte {
 	var index int
 	var choice byte
 	emptySquares := b.ListEmptySquares()
-	//fmt.Println("emptySquares = ", emptySquares)
+	fmt.Println("emptySquares = ", emptySquares)
 	//fmt.Println("emptySquareLen = ", len(emptySquares))
 
 	// compare to the memories
 	boardNumber := uint(b.Int())
 	//fmt.Println("board number: ", boardNumber)
-	//fmt.Println("memories about this board: ", r.memories[boardNumber])
+	fmt.Println("memories about this board: ", r.memories[boardNumber])
 	availableSquares := filterSquares(emptySquares, r.memories[boardNumber])
 
-	//fmt.Println("available squares:", availableSquares)
+	fmt.Println("available squares:", availableSquares)
 
 	if len(availableSquares) != 0 {
 		index = rand.Intn(len(availableSquares))
@@ -98,17 +102,18 @@ func uniqueSquares(list []byte) (newList []byte) {
 
 // Win adjust strategy on a win
 func (r *RememberLosingStrategy) Win(b Board) {
-	winningBoard := int(b.Int())
-	fmt.Println("winningBoard = ", winningBoard)
-	fmt.Println(r.moves)
+	//winningBoard := int(b.Int())
+	//fmt.Println("winningBoard = ", winningBoard)
+	//fmt.Println(r.moves)
+	r.resetMoves()
 	return
 }
 
 // Lose adjust strategy on a lose
 func (r *RememberLosingStrategy) Lose(b Board) {
-	losingBoard := int(b.Int())
-	fmt.Println("losingBoard = ", losingBoard)
-	fmt.Println(r.moves)
+	//losingBoard := int(b.Int())
+	//fmt.Println("losingBoard = ", losingBoard)
+	//fmt.Println(r.moves)
 	for board, moves := range r.moves {
 		fmt.Println(" -- board = ", board)
 		fmt.Println(" ---- moves = ", moves)
@@ -120,12 +125,14 @@ func (r *RememberLosingStrategy) Lose(b Board) {
 		r.memories[board] = uniqueSquares(r.memories[board])
 		delete(r.moves, board)
 	}
-	fmt.Println("new memories: ", r.memories)
+	//fmt.Println("new memories: ", r.memories)
+	r.resetMoves()
 	return
 }
 
 // Draw adjust strategy on a draw
 func (r *RememberLosingStrategy) Draw(b Board) {
-	fmt.Println(r.moves)
+	//fmt.Println(r.moves)
+	r.resetMoves()
 	return
 }
