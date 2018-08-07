@@ -74,6 +74,10 @@ func (p Player) Move(b Board) byte {
 // Stats about the player's record
 func (p *Player) Stats() {
 	fmt.Println(p)
+	fmt.Println("Name:", p.Name())
+	fmt.Println("  Number:", p.Number())
+	fmt.Println("  Wins:", p.winCount)
+	fmt.Println("  Loses:", p.loseCount)
 }
 
 // Win handler
