@@ -20,7 +20,7 @@ type Player struct {
 	strategy  Strategy
 	moves     []byte
 	winCount  uint
-	loseCount uint
+	lossCount uint
 	drawCount uint
 }
 
@@ -31,7 +31,7 @@ func NewPlayer() Player {
 	p.number = 0
 	p.strategy = NewRandomStrategy()
 	p.winCount = 0
-	p.loseCount = 0
+	p.lossCount = 0
 	p.drawCount = 0
 	return p
 }
@@ -73,25 +73,31 @@ func (p Player) Move(b Board) byte {
 
 // Stats about the player's record
 func (p *Player) Stats() {
-	fmt.Println(p)
+	totalGames := p.winCount + p.lossCount + p.drawCount
 	fmt.Println("Name:", p.Name())
 	fmt.Println("  Number:", p.Number())
+	fmt.Println("  Total Games:", totalGames)
 	fmt.Println("  Wins:", p.winCount)
-	fmt.Println("  Loses:", p.loseCount)
+	fmt.Println("  Loses:", p.lossCount)
+	fmt.Println("  Draws:", p.drawCount)
+	if totalGames > 0 {
+		winPercentage := 100 * float64(p.winCount) / float64(totalGames)
+		fmt.Printf("  Win Percentage: %.2f%%\n", winPercentage)
+		lossPercentage := 100 * float64(p.lossCount) / float64(totalGames)
+		fmt.Printf("  Loss Percentage: %.2f%%\n", lossPercentage)
+	}
 }
 
 // Win handler
 func (p *Player) Win(b Board) {
-	fmt.Println(" old win count:", p.winCount)
 	p.winCount++
 	p.strategy.Win(b)
-	fmt.Println(" new win count:", p.winCount)
 	return
 }
 
 // Lose handler
 func (p *Player) Lose(b Board) {
-	p.loseCount++
+	p.lossCount++
 	p.strategy.Lose(b)
 }
 
