@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("  Strategy: ", p.Strategy().Name())
 	}
 
-	maxGames := 100
+	maxGames := 10000
 	//roundOver := false
 	//var round []byte
 
