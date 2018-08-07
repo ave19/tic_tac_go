@@ -3,84 +3,78 @@ package main
 import (
 	"fmt"
 	"github.com/ave19/tictacgo/lib"
+	"math/rand"
+	"time"
 )
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Println("WOULD YOU LIKE TO PLAY A GAME")
+	playerOne := tictacgo.NewPlayer()
+	playerOne.SetName("Alice")
+	playerOne.SetNumber(1)
 
-	/*
-		fmt.Printf("as string -> '%v'\n", a.String())
-		fmt.Printf("as state -> '%v'\n", a.Byte())
+	playerTwo := tictacgo.NewPlayer()
+	playerTwo.SetName("Bob")
+	playerTwo.SetNumber(2)
+	playerTwo.SetStrategy(tictacgo.NewRememberLosingStrategy())
 
-		a.SetFromString("X")
-		fmt.Printf("as string -> '%v'\n", a.String())
-		fmt.Printf("as state -> '%v'\n", a.Byte())
+	fmt.Println("Players:")
 
-		fmt.Println("board:")
-		fmt.Println(b.String())
-		fmt.Printf("board upper left: %v\n", b.Upper_left.Byte())
+	players := []tictacgo.Player{playerOne, playerTwo}
+	for _, p := range players {
+		fmt.Println("Player ", p.Number(), ":  ", p.Name())
+		fmt.Println("  Strategy: ", p.Strategy().Name())
+	}
 
-		b.Middle_left.SetFromString("X")
-		b.Lower_center.SetFromString("O")
-		fmt.Println("board2:")
-		fmt.Println(b.String())
+	maxGames := 100
+	//roundOver := false
+	//var round []byte
 
-		fmt.Printf("board base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("board int: %v\n", b.Int())
-		fmt.Println("-----------------------------------------")
-		fmt.Printf("board reset:\n")
-		b.SetFromInt(0)
-		fmt.Printf("base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("int: %v\n", b.Int())
-		fmt.Printf("middle: %v\n", b.GetSquareByInt(4).String())
+	for game := 0; game < maxGames; game++ {
+		b := tictacgo.NewBoard()
+		for _, p := range players {
+			p.Stats()
+		}
+		fmt.Println("\nGame ", game+1)
+		roundOver := false
+		for count := 0; !roundOver; count++ {
+			fmt.Println("Round ", count, ":")
+			playerSelector := count % len(players)
+			player := players[playerSelector]
+			fmt.Println(" - Current Player: ", player.Name())
+			b.Move(player.Move(b), player.Number())
+			if count >= int(b.NumSquares) {
+				roundOver = true
+			}
+			fmt.Println(b.String())
+			win, mark := b.Winner()
+			if win {
+				for _, p := range players {
+					if p.Number() == mark {
+						fmt.Println("Winner: ", p.Name())
+						p.Win(b)
+					} else {
+						fmt.Println("Loser: ", p.Name())
+						p.Lose(b)
+					}
+				}
 
-		fmt.Println("-----------------------------------------")
-		fmt.Println("setting board to 249")
-		b.SetFromInt(249)
-		fmt.Printf("base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("board int: %v\n", b.Int())
-		fmt.Printf("middle: %v\n", b.GetSquareByInt(4).String())
+				roundOver = true
+			} else {
+				remainingSquares := len(b.ListEmptySquares())
+				if remainingSquares == 0 {
+					fmt.Println("It was a tie.")
+					roundOver = true
+					for _, p := range players {
+						p.Draw(b)
+					}
+				}
+			}
+		}
+	}
 
-		fmt.Println("-----------------------------------------")
-		fmt.Println("setting board to 12654")
-		b.SetFromInt(12654)
-		fmt.Printf("base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("board int: %v\n", b.Int())
-		fmt.Printf("middle: %v\n", b.GetSquareByInt(4).String())
-
-		fmt.Println("-----------------------------------------")
-		fmt.Println("setting board to 8643")
-		b.SetFromInt(8643)
-		fmt.Printf("base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("board int: %v\n", b.Int())
-		fmt.Printf("middle: %v\n", b.GetSquareByInt(4).String())
-		b.Move(1, '1')
-		fmt.Printf("moved board:\n%v", b.String())
-
-
-		fmt.Println("-----------------------------------------")
-		fmt.Println("setting board to 6561")
-		b.SetFromInt(6561)
-		fmt.Printf("base 3: %v\n", b.Base3())
-		fmt.Printf("board:\n%v", b.String())
-		fmt.Printf("board int: %v\n", b.Int())
-		fmt.Printf("middle: %v\n", b.GetSquareByInt(4).String())
-
-		fmt.Println("-----------------------------------------")
-		b.SetFromInt(1236561)
-		fmt.Println("-----------------------------------------")
-	*/
-
-	b := tictacgo.NewBoard()
-	b.Move(3, 2)
-	fmt.Println(b.String())
-	win, winner := b.Winner()
-	fmt.Println("win: ", win)
-	fmt.Println("winner: ", winner)
-
+	for _, p := range players {
+		p.Stats()
+	}
 }
