@@ -21,7 +21,7 @@ func main() {
 
 	fmt.Println("Players:")
 
-	players := []tictacgo.Player{playerOne, playerTwo}
+	players := []*tictacgo.Player{&playerOne, &playerTwo}
 	for _, p := range players {
 		fmt.Println("Player ", p.Number(), ":  ", p.Name())
 		fmt.Println("  Strategy: ", p.Strategy().Name())
@@ -40,6 +40,8 @@ func main() {
 		roundOver := false
 		for count := 0; !roundOver; count++ {
 			fmt.Println("Round ", count, ":")
+			fmt.Println(b.Int())
+			fmt.Println(b.String())
 			playerSelector := count % len(players)
 			player := players[playerSelector]
 			fmt.Println(" - Current Player: ", player.Name())
@@ -47,7 +49,6 @@ func main() {
 			if count >= int(b.NumSquares) {
 				roundOver = true
 			}
-			fmt.Println(b.String())
 			win, mark := b.Winner()
 			if win {
 				for _, p := range players {
@@ -72,6 +73,9 @@ func main() {
 				}
 			}
 		}
+		fmt.Println("Final Board:")
+		fmt.Println(b.Int())
+		fmt.Println(b.String())
 	}
 
 	for _, p := range players {
