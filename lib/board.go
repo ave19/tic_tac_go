@@ -7,8 +7,6 @@ import (
 	"strconv"
 )
 
-const numSquares = 9
-
 var winCombos = [8][3]byte{
 	{0, 1, 2}, // across the top
 	{3, 4, 5}, // across the middle
@@ -22,13 +20,16 @@ var winCombos = [8][3]byte{
 
 // Board is the tic tac toe board
 type Board struct {
-	board []Square
+	board      []Square
+	NumSquares uint
 }
 
 // NewBoard returns a board structure
 func NewBoard() Board {
+	numSquares := uint(9)
 	var b Board
 	b.board = make([]Square, numSquares)
+	b.NumSquares = numSquares
 	for i := byte(0); i < byte(numSquares); i++ {
 		b.board[i].state = 0
 	}
@@ -114,8 +115,21 @@ func (b *Board) SetFromBase3(newValue string) {
 	b.board[8].SetFromByte(byte(lr))
 }
 
+// ListEmptySquares still available
+func (b Board) ListEmptySquares() (emptySquares []byte) {
+	for i := uint(0); i < b.NumSquares; i++ {
+		if b.board[i].Byte() == 0 {
+			emptySquares = append(emptySquares, byte(i))
+		} else {
+			//fmt.Println("square ", i, " taken by player ", b.board[i])
+		}
+	}
+	return
+}
+
 // Move adjusts the board to a moved state
 func (b *Board) Move(square uint8, mark byte) {
+	fmt.Println("board.Move(", square, ", ", mark, ")")
 	b.board[square].SetFromByte(mark)
 }
 
