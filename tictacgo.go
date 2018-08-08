@@ -13,6 +13,7 @@ func main() {
 	playerOne := tictacgo.NewPlayer()
 	playerOne.SetName("Alice")
 	playerOne.SetNumber(1)
+	playerOne.SetStrategy(tictacgo.NewRememberWinningStrategy())
 
 	playerTwo := tictacgo.NewPlayer()
 	playerTwo.SetName("Bob")
