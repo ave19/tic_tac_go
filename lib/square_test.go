@@ -1,8 +1,15 @@
 package tictacgo
 
 import (
+	//"os"
+	"io/ioutil"
 	"testing"
 )
+
+func init() {
+	//InitLogging(os.Stdout, os.Stdout, os.Stdout, os.Stdout)
+	InitLogging(ioutil.Discard, ioutil.Discard, ioutil.Discard, ioutil.Discard)
+}
 
 func TestSetFromStringX(t *testing.T) {
 	testSquare := Square{}
@@ -58,5 +65,14 @@ func TestSetFromByte(t *testing.T) {
 
 	if result != expected {
 		t.Errorf("Setting the square failed! expected '%v', result '%v'", expected, result)
+	}
+}
+
+func TestSetFromByteBad(t *testing.T) {
+	testSquare := Square{}
+	var testByte byte = 3
+	err := testSquare.SetFromByte(testByte)
+	if err != nil {
+		t.Errorf("Expected failure!")
 	}
 }
