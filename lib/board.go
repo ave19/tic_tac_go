@@ -2,10 +2,13 @@ package tictacgo
 
 import (
 	"bytes"
-	//"strings"
 	"fmt"
+	"math"
 	"strconv"
 )
+
+// There is a limit to the board values
+var maxBoardValue = uint64(math.Pow(3, 9)) - 1
 
 var winCombos = [8][3]byte{
 	{0, 1, 2}, // across the top
@@ -82,37 +85,58 @@ func (b Board) Int() uint64 {
 }
 
 // SetFromInt you give it an integer, it makes a board out of it
-func (b *Board) SetFromInt(newValue uint64) {
-	if newValue > 19862 {
-		fmt.Println("new value is too big")
+func (b *Board) SetFromInt(newValue uint64) (err error) {
+	err = nil
+	if newValue > maxBoardValue {
+		err := ValueError{"New value is too big"}
+		Error.Println("Cannot set:", err.message, newValue)
 	} else {
 		b.SetFromBase3(strconv.FormatUint(newValue, 3))
 	}
+	return err
 }
 
 // SetFromBase3 you give it a string like '010212120'
-func (b *Board) SetFromBase3(newValue string) {
+func (b *Board) SetFromBase3(newValue string) (err error) {
+	err = nil
 	strRepresentation := fmt.Sprintf("%09s", newValue)
+	/*
+		ul, err := strconv.ParseInt(strRepresentation[0:1], 10, 8)
+		if err != nil {
+			Error.Printf("%v: %v: %v", err, newValue)
+			return err
+		}
+	*/
 
-	ul, _ := strconv.ParseInt(strRepresentation[0:1], 10, 8)
-	uc, _ := strconv.ParseInt(strRepresentation[1:2], 10, 8)
-	ur, _ := strconv.ParseInt(strRepresentation[2:3], 10, 8)
-	ml, _ := strconv.ParseInt(strRepresentation[3:4], 10, 8)
-	mc, _ := strconv.ParseInt(strRepresentation[4:5], 10, 8)
-	mr, _ := strconv.ParseInt(strRepresentation[5:6], 10, 8)
-	ll, _ := strconv.ParseInt(strRepresentation[6:7], 10, 8)
-	lc, _ := strconv.ParseInt(strRepresentation[7:8], 10, 8)
-	lr, _ := strconv.ParseInt(strRepresentation[8:9], 10, 8)
+	for i := 0; i < 9; i++ {
+		x, err := strconv.ParseInt(strRepresentation[i:i+1], 10, 8)
+		if err != nil {
+			Error.Printf("%v: %v\n", err, x)
+		}
+		b.board[i].SetFromByte(byte(x))
+	}
 
-	b.board[0].SetFromByte(byte(ul))
-	b.board[1].SetFromByte(byte(uc))
-	b.board[2].SetFromByte(byte(ur))
-	b.board[3].SetFromByte(byte(ml))
-	b.board[4].SetFromByte(byte(mc))
-	b.board[5].SetFromByte(byte(mr))
-	b.board[6].SetFromByte(byte(ll))
-	b.board[7].SetFromByte(byte(lc))
-	b.board[8].SetFromByte(byte(lr))
+	/*
+		ul, _ := strconv.ParseInt(strRepresentation[0:1], 10, 8)
+		uc, _ := strconv.ParseInt(strRepresentation[1:2], 10, 8)
+		ur, _ := strconv.ParseInt(strRepresentation[2:3], 10, 8)
+		ml, _ := strconv.ParseInt(strRepresentation[3:4], 10, 8)
+		mc, _ := strconv.ParseInt(strRepresentation[4:5], 10, 8)
+		mr, _ := strconv.ParseInt(strRepresentation[5:6], 10, 8)
+		ll, _ := strconv.ParseInt(strRepresentation[6:7], 10, 8)
+		lc, _ := strconv.ParseInt(strRepresentation[7:8], 10, 8)
+		lr, _ := strconv.ParseInt(strRepresentation[8:9], 10, 8)
+		b.board[0].SetFromByte(byte(ul))
+		b.board[1].SetFromByte(byte(uc))
+		b.board[2].SetFromByte(byte(ur))
+		b.board[3].SetFromByte(byte(ml))
+		b.board[4].SetFromByte(byte(mc))
+		b.board[5].SetFromByte(byte(mr))
+		b.board[6].SetFromByte(byte(ll))
+		b.board[7].SetFromByte(byte(lc))
+		b.board[8].SetFromByte(byte(lr))
+	*/
+	return
 }
 
 // ListEmptySquares still available
@@ -120,17 +144,17 @@ func (b Board) ListEmptySquares() (emptySquares []byte) {
 	for i := uint(0); i < b.NumSquares; i++ {
 		if b.board[i].Byte() == 0 {
 			emptySquares = append(emptySquares, byte(i))
-		} else {
-			//fmt.Println("square ", i, " taken by player ", b.board[i])
 		}
 	}
+	Trace.Printf("%d empty squares.\n", len(emptySquares))
 	return
 }
 
 // Move adjusts the board to a moved state
-func (b *Board) Move(square uint8, mark byte) {
-	fmt.Println("board.Move(", square, ", ", mark, ")")
-	b.board[square].SetFromByte(mark)
+func (b *Board) Move(square uint8, mark byte) (err error) {
+	Trace.Printf("Move: square: %d, mark: %d\n", square, mark)
+	err = b.board[square].SetFromByte(mark)
+	return err
 }
 
 // Winner return the winning player if there is one
