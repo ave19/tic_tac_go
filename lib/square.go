@@ -1,8 +1,6 @@
 package tictacgo
 
-import (
-	"fmt"
-)
+import ()
 
 type state byte
 
@@ -36,7 +34,8 @@ func (s Square) Byte() byte {
 }
 
 // SetFromString changes the state to the indicated mark
-func (s *Square) SetFromString(newValue string) {
+func (s *Square) SetFromString(newValue string) (err error) {
+	err = nil
 	switch newValue {
 	case " ":
 		s.state = empty
@@ -45,12 +44,15 @@ func (s *Square) SetFromString(newValue string) {
 	case "O":
 		s.state = o
 	default:
-		fmt.Println("I don't like that value, I'm ignoring you.")
+		err := ValueError{"Cannot set square"}
+		Error.Printf("%v to %v\n", err.message, newValue)
 	}
+	return
 }
 
 // SetFromByte changes the state to the indicated mark
-func (s *Square) SetFromByte(newValue byte) {
+func (s *Square) SetFromByte(newValue byte) (err error) {
+	err = nil
 	switch newValue {
 	case 0:
 		s.state = empty
@@ -59,6 +61,8 @@ func (s *Square) SetFromByte(newValue byte) {
 	case 2:
 		s.state = o
 	default:
-		fmt.Printf("I don't like that value '%v', I'm ignoring you.\n", newValue)
+		err := ValueError{"Cannot set byte"}
+		Error.Printf("%v to %d\n", err.message, newValue)
 	}
+	return
 }
