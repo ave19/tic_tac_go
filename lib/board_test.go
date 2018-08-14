@@ -1,12 +1,15 @@
 package tictacgo
 
 import (
-	"fmt"
+	//"io/ioutil"
+	"math"
+	"os"
 	"testing"
 )
 
-func TestZero(t *testing.T) {
-	fmt.Println("testing board")
+func init() {
+	InitLogging(os.Stdout, os.Stdout, os.Stdout, os.Stdout)
+	//InitLogging(ioutil.Discard, ioutil.Discard, ioutil.Discard, ioutil.Discard)
 }
 
 func TestStringZero(t *testing.T) {
@@ -96,6 +99,16 @@ func TestSetFromInt(t *testing.T) {
 	testBoard.SetFromInt(expected)
 	result := testBoard.Int()
 	if result != expected {
+		t.Errorf("Test failed! expected '%v', result '%v'", expected, result)
+	}
+}
+
+func TestSetTooBigFromInt(t *testing.T) {
+	testBoard := NewBoard()
+	var expected = uint64(math.Pow(3, 9))
+	err := testBoard.SetFromInt(expected)
+	result := testBoard.Int()
+	if err != nil {
 		t.Errorf("Test failed! expected '%v', result '%v'", expected, result)
 	}
 }
