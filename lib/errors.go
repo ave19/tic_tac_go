@@ -15,3 +15,12 @@ func NewErrBadSquare(message string) *ErrBadSquare {
 func (e *ErrBadSquare) Error() string {
 	return e.message
 }
+
+// ValueError What to pass when something's not right
+type ValueError struct {
+	message string
+}
+
+func (e *ValueError) Error() string {
+	return e.message
+}
