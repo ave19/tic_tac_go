@@ -22,6 +22,7 @@ type Player struct {
 	winCount  uint
 	lossCount uint
 	drawCount uint
+	moveChan  chan byte
 }
 
 // NewPlayer returns a new player
@@ -75,7 +76,8 @@ func (p Player) Move(b Board) byte {
 func (p *Player) Stats() {
 	totalGames := p.winCount + p.lossCount + p.drawCount
 	fmt.Println("Name:", p.Name())
-	fmt.Println("  Number:", p.Number())
+	fmt.Println("  Player:", p.Number())
+	fmt.Println("  Strategy:", p.Strategy().Name())
 	fmt.Println("  Total Games:", totalGames)
 	fmt.Println("  Wins:", p.winCount)
 	fmt.Println("  Loses:", p.lossCount)
@@ -90,6 +92,7 @@ func (p *Player) Stats() {
 
 // Win handler
 func (p *Player) Win(b Board) {
+	Trace.Printf("%v: win", p.Name())
 	p.winCount++
 	p.strategy.Win(b)
 	return
@@ -97,12 +100,25 @@ func (p *Player) Win(b Board) {
 
 // Lose handler
 func (p *Player) Lose(b Board) {
+	Trace.Printf("%v: lose", p.Name())
 	p.lossCount++
 	p.strategy.Lose(b)
 }
 
 // Draw handler
 func (p *Player) Draw(b Board) {
+	Trace.Printf("%v: draw", p.Name())
 	p.drawCount++
 	p.strategy.Draw(b)
+}
+
+// Play handler
+func (p *Player) Play(bChan chan Board, mChan chan byte) {
+	fmt.Printf("%v: Ready to play!\n", p.Name())
+	for board := range bChan {
+		Trace.Printf("%v: received board: %v\n", p.Name(), board.Int())
+		myMove := p.Move(board)
+		Trace.Printf("%v: pics %v.\n", p.Name(), myMove)
+		mChan <- myMove
+	}
 }
