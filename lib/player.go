@@ -115,6 +115,8 @@ func (p *Player) Draw(b Board) {
 // Play handler
 func (p *Player) Play(bChan chan Board, mChan chan byte) {
 	fmt.Printf("%v: Ready to play!\n", p.Name())
+	fmt.Println("bChan:", bChan)
+	fmt.Println("mChan:", mChan)
 	for board := range bChan {
 		Trace.Printf("%v: received board: %v\n", p.Name(), board.Int())
 		myMove := p.Move(board)
