@@ -5,14 +5,14 @@ import (
 	"github.com/ave19/tictacgo/lib"
 	//"io/ioutil"
 	"math/rand"
-	"os"
 	"time"
 )
 
-func main() {
-	//tictacgo.InitLogging(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
-	tictacgo.InitLogging(os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
+}
+
+func main() {
 	fmt.Println("WOULD YOU LIKE TO PLAY A GAME")
 
 	moveChan := make(chan byte)
