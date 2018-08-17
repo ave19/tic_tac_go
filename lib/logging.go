@@ -3,6 +3,7 @@ package tictacgo
 import (
 	"io"
 	"log"
+	"os"
 )
 
 var (
@@ -15,6 +16,10 @@ var (
 	// Error logging
 	Error *log.Logger
 )
+
+func init() {
+	InitLogging(os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+}
 
 //InitLogging stuff
 func InitLogging(
