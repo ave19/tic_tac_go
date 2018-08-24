@@ -1,7 +1,9 @@
 package tictacgo
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 )
 
 // Strategy of various move methods
@@ -73,21 +75,23 @@ func (p Player) Move(b Board) byte {
 }
 
 // Stats about the player's record
-func (p *Player) Stats() {
+func (p Player) Stats(output io.Writer) {
+	var out bytes.Buffer
 	totalGames := p.winCount + p.lossCount + p.drawCount
-	fmt.Println("Name:", p.Name())
-	fmt.Println("  Player:", p.Number())
-	fmt.Println("  Strategy:", p.Strategy().Name())
-	fmt.Println("  Total Games:", totalGames)
-	fmt.Println("  Wins:", p.winCount)
-	fmt.Println("  Loses:", p.lossCount)
-	fmt.Println("  Draws:", p.drawCount)
+	out.WriteString(fmt.Sprintf("Name: %v\n", p.Name()))
+	out.WriteString(fmt.Sprintf("  Player: %d\n", p.Number()))
+	out.WriteString(fmt.Sprintf("  Strategy: %v\n", p.Strategy().Name()))
+	out.WriteString(fmt.Sprintf("  Total Games: %d\n", totalGames))
+	out.WriteString(fmt.Sprintf("  Wins: %d\n", p.winCount))
+	out.WriteString(fmt.Sprintf("  Loses: %d\n", p.lossCount))
+	out.WriteString(fmt.Sprintf("  Draws: %d\n", p.drawCount))
 	if totalGames > 0 {
 		winPercentage := 100 * float64(p.winCount) / float64(totalGames)
-		fmt.Printf("  Win Percentage: %.2f%%\n", winPercentage)
+		out.WriteString(fmt.Sprintf("  Win Percentage: %.2f%%\n", winPercentage))
 		lossPercentage := 100 * float64(p.lossCount) / float64(totalGames)
-		fmt.Printf("  Loss Percentage: %.2f%%\n", lossPercentage)
+		out.WriteString(fmt.Sprintf("  Loss Percentage: %.2f%%\n", lossPercentage))
 	}
+	output.Write(out.Bytes())
 }
 
 // Win handler
@@ -115,12 +119,12 @@ func (p *Player) Draw(b Board) {
 // Play handler
 func (p *Player) Play(bChan chan Board, mChan chan byte) {
 	fmt.Printf("%v: Ready to play!\n", p.Name())
-	fmt.Println("bChan:", bChan)
-	fmt.Println("mChan:", mChan)
+	Trace.Println("bChan:", bChan)
+	Trace.Println("mChan:", mChan)
 	for board := range bChan {
 		Trace.Printf("%v: received board: %v\n", p.Name(), board.Int())
 		myMove := p.Move(board)
-		Trace.Printf("%v: pics %v.\n", p.Name(), myMove)
+		Trace.Printf("%v: picks %v.\n", p.Name(), myMove)
 		mChan <- myMove
 	}
 }
