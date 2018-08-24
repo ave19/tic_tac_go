@@ -1,7 +1,6 @@
 package tictacgo
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -50,6 +49,7 @@ func (r *RememberWinningStrategy) Move(b Board) byte {
 
 	}
 
+	Trace.Printf("Choice: %d", choice)
 	// Now we jot down our move so we can think about it later
 	r.moves[boardNumber] = append(r.moves[boardNumber], choice)
 	return choice
@@ -57,7 +57,7 @@ func (r *RememberWinningStrategy) Move(b Board) byte {
 
 // Win adjust strategy on a win
 func (r *RememberWinningStrategy) Win(b Board) {
-	fmt.Println(r.Name())
+	Trace.Println(r.Name())
 	for board := range r.moves {
 		for _, m := range r.moves[board] {
 			r.memories[board] = append(r.memories[board], m)
