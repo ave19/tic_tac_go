@@ -24,7 +24,6 @@ type Player struct {
 	winCount  uint
 	lossCount uint
 	drawCount uint
-	moveChan  chan byte
 }
 
 // NewPlayer returns a new player
